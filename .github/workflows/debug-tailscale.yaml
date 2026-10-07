@@ -7,14 +7,44 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # Connect runner to your Tailnet:
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      # Enable Tailscale SSH daemon:
+      - name: Enable Tailscale SSH
+        run: |
+          sudo tailscale set --ssh
+
+          echo "==========================================================="
+          echo "Tailscale IPs: $(tailscale ip | xargs)"
+          echo "Connect via SSH using:"
+          echo "  * ssh runner@$(tailscale ip -4)"
+          echo "  * ssh runner@$(tailscale ip -6)"
+          echo "==========================================================="
+
+          # Prevent macOS from throttling network sockets and background daemons:
+          caffeinate -s -i -u &
+
       # Pre-install some Homebrew packages:
       - name: Install custom packages
         run: |
+          brew install -y bash bash-completion@2 cmake figlet gnu-getopt gettext git joe make pwgen wget
+
+
           brew install -y libidn2 libmaxminddb
+
+          brew install ghostscript graphicsmagick pdf2svg
+
           brew install -y bison && brew link --force bison
+
           brew install -y boost
           brew install -y mariadb-connector-c libpqxx mongo-c-driver
+
           brew install -y qt
+
           brew install -y exiftool gimp
           brew install -y --cask font-noto-sans
           brew install -y --cask font-noto-serif
@@ -23,12 +53,21 @@ jobs:
           brew install -y --cask font-noto-sans-cjk
           brew install -y --cask font-noto-serif-cjk
           brew install -y --cask font-noto-nerd-font
+
           brew install -y gnutls nss
+
           brew install -y autoconf automake glib libtool
+
           brew install pulseaudio
+
           brew install openssl jansson ldns libuv
+
           brew install -y python3
-          pip install psutil distro
+          pip install distro psutil
+
+          python3 -m venv ~/venv
+          . ~/venv/bin/activate
+          pip install distro psutil
 
       # Clone some repositories:
       - name: Clone repositories
@@ -49,26 +88,40 @@ jobs:
           git clone https://dreibh@github.com/dreibh/tsctp
           git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
 
-      # Connect runner to your Tailnet:
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@v4
-        with:
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+      # Install System-Tools and configure environment:
+      - name: Install System-Tools and configure environment
+        run: |
+          cd ~/src/system-tools
+          ./autogen.sh
+          sudo make install
 
-      # Enable Tailscale SSH daemon:
-      - name: Enable Tailscale SSH
-        run: sudo tailscale set --ssh
+          sudo cp \
+             ~/src/vmimage-builder-scripts/files/11-system-info.files/01-hostname \
+             ~/src/vmimage-builder-scripts/files/80-simulamet.files/02-simulamet \
+             /usr/local/etc/system-info.d/
+
+          # Set shell to Bash:
+          sudo dscl . -create /Users/runner UserShell /opt/homebrew/bin/bash
+
+          # Enable Bash shell completions:
+          cat >>~/.bashrc <<EOF
+          [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
+          EOF
+
+          # Set a useful hostname:
+          sudo Reset-Machine-ID --yes-to-all-i-am-really-sure -MK -H "apple.github.test"
 
       # Pause the runner for interactive SSH debugging:
       - name: Wait for SSH debugging
         run: |
-          echo "=================================================="
-          echo "Tailscale IP: $(tailscale ip -4)"
-          echo "Connect via SSH using:"
-          echo "  ssh runner@$(tailscale ip -4)"
-          echo "=================================================="
-
-          while true; do
-            date
-            sleep 300
-          done
+          caffeinate -s -i -u bash -c '
+            while true; do
+              echo "==========================================================="
+              echo "Tailscale IPs: $(tailscale ip | xargs)"
+              echo "Connect via SSH using:"
+              echo "  * ssh runner@$(tailscale ip -4)"
+              echo "  * ssh runner@$(tailscale ip -6)"
+              echo "==========================================================="
+              sleep 60
+            done
+          '
