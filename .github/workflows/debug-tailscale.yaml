@@ -10,31 +10,44 @@ jobs:
       # Pre-install some Homebrew packages:
       - name: Install custom packages
         run: |
-          brew install -y autoconf automake bash cmake figlet gnu-getopt gettext git joe libtool make pwgen wget
           brew install -y libidn2 libmaxminddb
-          brew install -y bison
+          brew install -y bison && brew link --force bison
           brew install -y boost
-          brew install -y exiftool ghostscript GraphicsMagick mupdf-tools nss
+          brew install -y mariadb-connector-c libpqxx mongo-c-driver
+          brew install -y qt
+          brew install -y exiftool gimp
+          brew install -y --cask font-noto-sans
+          brew install -y --cask font-noto-serif
+          brew install -y --cask font-noto-sans-mono
+          brew install -y --cask font-noto-emoji
+          brew install -y --cask font-noto-sans-cjk
+          brew install -y --cask font-noto-serif-cjk
+          brew install -y --cask font-noto-nerd-font
+          brew install -y gnutls nss
+          brew install -y autoconf automake glib libtool
+          brew install pulseaudio
+          brew install openssl jansson ldns libuv
           brew install -y python3
-          pip install psutil
+          pip install psutil distro
 
       # Clone some repositories:
       - name: Clone repositories
         run: |
-          mkdir -p src
-          cd src
-          # Full directory path: /Users/runner/src
+          mkdir -p ~/src && cd ~/src
           git clone https://dreibh@github.com/dreibh/bibtexconv
           git clone https://dreibh@github.com/dreibh/fractgen
           git clone https://dreibh@github.com/dreibh/hipercontracer
           git clone https://dreibh@github.com/dreibh/netperfmeter
-          git clone https://dreibh@github.com/dreibh/rsplib
           git clone https://dreibh@github.com/dreibh/rserpooldemo
+          git clone https://dreibh@github.com/dreibh/rsplib
+          git clone https://dreibh@github.com/dreibh/rtpaudio
           git clone https://dreibh@github.com/dreibh/sctplib
+          git clone https://dreibh@github.com/dreibh/slideshow
           git clone https://dreibh@github.com/dreibh/socketapi
           git clone https://dreibh@github.com/dreibh/subnetcalc
           git clone https://dreibh@github.com/dreibh/system-tools
           git clone https://dreibh@github.com/dreibh/tsctp
+          git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
 
       # Connect runner to your Tailnet:
       - name: Connect to Tailscale
@@ -54,4 +67,8 @@ jobs:
           echo "Connect via SSH using:"
           echo "  ssh runner@$(tailscale ip -4)"
           echo "=================================================="
-          sleep 86400
+
+          while true; do
+            date
+            sleep 300
+          done
