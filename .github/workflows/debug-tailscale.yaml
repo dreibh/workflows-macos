@@ -31,7 +31,7 @@ jobs:
       # Pre-install some Homebrew packages:
       - name: Install custom packages
         run: |
-          brew install -y bash bash-completion@2 cmake figlet gnu-getopt gettext git joe make pwgen wget
+          brew install -y bash bash-completion@2 cmake figlet gnu-getopt gettext git htop joe make pwgen wget
 
 
           brew install -y libidn2 libmaxminddb
@@ -107,6 +107,7 @@ jobs:
           cat >>~/.bashrc <<EOF
           [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
           EOF
+          cat ~/src/vmimage-builder-scripts/files/05-user-settings.files/bashrc >>~/.bashrc
 
           # Set a useful hostname:
           sudo Reset-Machine-ID --yes-to-all-i-am-really-sure -MK -H "apple.github.test"
