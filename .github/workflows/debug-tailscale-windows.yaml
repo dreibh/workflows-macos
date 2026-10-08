@@ -40,7 +40,7 @@ jobs:
       # Pre-install Windows packages via Chocolatey and Pip:
       - name: Install custom packages
         run: |
-          choco install -y cmake wget ghostscript graphicsmagick exiftool gimp python3
+          choco install -y --no-progress cmake wget ghostscript graphicsmagick exiftool gimp python3
 
           python -m pip install --upgrade pip
           pip install distro psutil
@@ -53,20 +53,21 @@ jobs:
       - name: Clone repositories
         run: |
           mkdir -p ~/src && cd ~/src
-          git clone https://dreibh@github.com/dreibh/bibtexconv
-          git clone https://dreibh@github.com/dreibh/fractgen
-          git clone https://dreibh@github.com/dreibh/hipercontracer
-          git clone https://dreibh@github.com/dreibh/netperfmeter
-          git clone https://dreibh@github.com/dreibh/rserpooldemo
-          git clone https://dreibh@github.com/dreibh/rsplib
-          git clone https://dreibh@github.com/dreibh/rtpaudio
-          git clone https://dreibh@github.com/dreibh/sctplib
-          git clone https://dreibh@github.com/dreibh/slideshow
-          git clone https://dreibh@github.com/dreibh/socketapi
+          # git clone https://dreibh@github.com/dreibh/bibtexconv
+          # git clone https://dreibh@github.com/simula/dynmhs
+          # git clone https://dreibh@github.com/dreibh/fractgen
+          # git clone https://dreibh@github.com/dreibh/hipercontracer
+          # git clone https://dreibh@github.com/dreibh/netperfmeter
+          # git clone https://dreibh@github.com/dreibh/rserpooldemo
+          # git clone https://dreibh@github.com/dreibh/rsplib
+          # git clone https://dreibh@github.com/dreibh/rtpaudio
+          # git clone https://dreibh@github.com/dreibh/sctplib
+          # git clone https://dreibh@github.com/dreibh/slideshow
+          # git clone https://dreibh@github.com/dreibh/socketapi
           git clone https://dreibh@github.com/dreibh/subnetcalc
           git clone https://dreibh@github.com/dreibh/system-tools
-          git clone https://dreibh@github.com/dreibh/tsctp
-          git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+          # git clone https://dreibh@github.com/dreibh/tsctp
+          # git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
 
       # Configure environment:
       - name: Configure environment
