@@ -74,6 +74,7 @@ jobs:
         run: |
           mkdir -p ~/src && cd ~/src
           git clone https://dreibh@github.com/dreibh/bibtexconv
+          git clone https://dreibh@github.com/simula/dynmhs
           git clone https://dreibh@github.com/dreibh/fractgen
           git clone https://dreibh@github.com/dreibh/hipercontracer
           git clone https://dreibh@github.com/dreibh/netperfmeter
@@ -110,7 +111,7 @@ jobs:
           cat ~/src/vmimage-builder-scripts/files/05-user-settings.files/bashrc >>~/.bashrc
 
           # Set a useful hostname:
-          sudo Reset-Machine-ID --yes-to-all-i-am-really-sure -MK -H "apple.github.test"
+          sudo Reset-Machine-ID --yes-to-all-i-am-really-sure -MSK -H "apple.github.test"
 
       # Pause the runner for interactive SSH debugging:
       - name: Wait for SSH debugging
