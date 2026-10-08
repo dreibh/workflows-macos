@@ -29,7 +29,7 @@ jobs:
       - name: Install custom packages
         run: |
           sudo apt-get update
-          sudo apt install -y bash-completion build-essential cmake gettext git joe sudo
+          sudo apt install -y bash-completion build-essential cmake figlet gettext git joe sudo
 
           sudo apt install -y libmaxminddb-dev
 
@@ -66,18 +66,18 @@ jobs:
           mkdir -p ~/src && cd ~/src
           git clone https://dreibh@github.com/dreibh/bibtexconv
           git clone https://dreibh@github.com/simula/dynmhs
-          # git clone https://dreibh@github.com/dreibh/fractgen
-          # git clone https://dreibh@github.com/dreibh/hipercontracer
-          # git clone https://dreibh@github.com/dreibh/netperfmeter
-          # git clone https://dreibh@github.com/dreibh/rserpooldemo
-          # git clone https://dreibh@github.com/dreibh/rsplib
-          # git clone https://dreibh@github.com/dreibh/rtpaudio
-          # git clone https://dreibh@github.com/dreibh/sctplib
-          # git clone https://dreibh@github.com/dreibh/slideshow
-          # git clone https://dreibh@github.com/dreibh/socketapi
-          # git clone https://dreibh@github.com/dreibh/subnetcalc
+          git clone https://dreibh@github.com/dreibh/fractgen
+          git clone https://dreibh@github.com/dreibh/hipercontracer
+          git clone https://dreibh@github.com/dreibh/netperfmeter
+          git clone https://dreibh@github.com/dreibh/rserpooldemo
+          git clone https://dreibh@github.com/dreibh/rsplib
+          git clone https://dreibh@github.com/dreibh/rtpaudio
+          git clone https://dreibh@github.com/dreibh/sctplib
+          git clone https://dreibh@github.com/dreibh/slideshow
+          git clone https://dreibh@github.com/dreibh/socketapi
+          git clone https://dreibh@github.com/dreibh/subnetcalc
           git clone https://dreibh@github.com/dreibh/system-tools
-          # git clone https://dreibh@github.com/dreibh/tsctp
+          git clone https://dreibh@github.com/dreibh/tsctp
           git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
 
       # Install System-Tools and configure environment:
@@ -91,7 +91,7 @@ jobs:
           sudo cp \
              ~/src/vmimage-builder-scripts/files/11-system-info.files/01-hostname \
              ~/src/vmimage-builder-scripts/files/80-simulamet.files/02-simulamet \
-             /usr/local/etc/system-info.d/
+             /etc/system-info.d/
 
           # Set shell to Bash:
           sudo chsh -s /bin/bash runner
