@@ -1,0 +1,104 @@
+name: Debug Linux via Tailscale
+on: [ workflow_dispatch ]   # Workflow is triggered manually
+
+jobs:
+  tailscale-debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Connect runner to your Tailnet:
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      # Enable Tailscale SSH daemon:
+      - name: Enable Tailscale SSH
+        run: |
+          sudo tailscale set --ssh
+
+          echo "==========================================================="
+          echo "Tailscale IPs: $(tailscale ip | xargs)"
+          echo "Connect via SSH using:"
+          echo "  * ssh runner@$(tailscale ip -4)"
+          echo "  * ssh runner@$(tailscale ip -6)"
+          echo "==========================================================="
+
+      # Pre-install Linux APT packages:
+      - name: Install custom packages
+        run: |
+          sudo apt-get update
+          # sudo apt-get install -y \
+          #   autoconf automake bash bash-completion bison build-essential cmake \
+          #   figlet gettext gimp git ghostscript graphicsmagick gnutls-bin \
+          #   htop joe libboost-all-dev libgnutls28-dev libidn2-dev libimage-exiftool-perl \
+          #   libjansson-dev libldns-dev libmariadb-dev libmaxminddb-dev libmongoc-dev \
+          #   libnss3-dev libpqxx-dev libssl-dev libtool libuv1-dev make pdf2svg \
+          #   pulseaudio pwgen qtbase5-dev wget \
+          #   fonts-noto fonts-noto-cjk fonts-noto-color-emoji fonts-noto-mono \
+          #   python3 python3-pip python3-venv
+          #
+          # pip install --break-system-packages distro psutil || pip install distro psutil
+          #
+          # python3 -m venv ~/venv
+          # . ~/venv/bin/activate
+          # pip install distro psutil
+
+      # Clone repositories:
+      - name: Clone repositories
+        run: |
+          mkdir -p ~/src && cd ~/src
+          git clone https://dreibh@github.com/dreibh/bibtexconv
+          git clone https://dreibh@github.com/dreibh/dynmhs
+          # git clone https://dreibh@github.com/dreibh/fractgen
+          # git clone https://dreibh@github.com/dreibh/hipercontracer
+          # git clone https://dreibh@github.com/dreibh/netperfmeter
+          # git clone https://dreibh@github.com/dreibh/rserpooldemo
+          # git clone https://dreibh@github.com/dreibh/rsplib
+          # git clone https://dreibh@github.com/dreibh/rtpaudio
+          # git clone https://dreibh@github.com/dreibh/sctplib
+          # git clone https://dreibh@github.com/dreibh/slideshow
+          # git clone https://dreibh@github.com/dreibh/socketapi
+          # git clone https://dreibh@github.com/dreibh/subnetcalc
+          # git clone https://dreibh@github.com/dreibh/system-tools
+          # git clone https://dreibh@github.com/dreibh/tsctp
+          git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+
+      # Install System-Tools and configure environment:
+      - name: Install System-Tools and configure environment
+        run: |
+          cd ~/src/system-tools
+          ./autogen.sh
+          sudo make install
+
+          sudo mkdir -p /usr/local/etc/system-info.d/
+          sudo cp \
+             ~/src/vmimage-builder-scripts/files/11-system-info.files/01-hostname \
+             ~/src/vmimage-builder-scripts/files/80-simulamet.files/02-simulamet \
+             /usr/local/etc/system-info.d/
+
+          # Set shell to Bash:
+          sudo chsh -s /bin/bash runner
+
+          # Enable Bash shell completions:
+          cat >>~/.bashrc <<'EOF'
+          [[ -r "/usr/share/bash-completion/bash_completion" ]] && . "/usr/share/bash-completion/bash_completion"
+          EOF
+          cat ~/src/vmimage-builder-scripts/files/05-user-settings.files/bashrc >>~/.bashrc
+
+          # Set a useful hostname:
+          sudo Reset-Machine-ID --yes-to-all-i-am-really-sure -MK -H "linux.github.test"
+
+      # Pause the runner for interactive SSH debugging:
+      - name: Wait for SSH debugging
+        run: |
+          while true; do
+            echo "==========================================================="
+            echo "Tailscale IPs: $(tailscale ip | xargs)"
+            echo "Connect via SSH using:"
+            echo "  * ssh runner@$(tailscale ip -4)"
+            echo "  * ssh runner@$(tailscale ip -6)"
+            echo "==========================================================="
+            sleep 60
+          done
