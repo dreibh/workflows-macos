@@ -50,7 +50,7 @@ jobs:
         run: |
           mkdir -p ~/src && cd ~/src
           git clone https://dreibh@github.com/dreibh/bibtexconv
-          git clone https://dreibh@github.com/dreibh/dynmhs
+          git clone https://dreibh@github.com/simula/dynmhs
           # git clone https://dreibh@github.com/dreibh/fractgen
           # git clone https://dreibh@github.com/dreibh/hipercontracer
           # git clone https://dreibh@github.com/dreibh/netperfmeter
