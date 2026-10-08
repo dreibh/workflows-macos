@@ -6,7 +6,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: bash   # Use Git Bash for command compatibility across steps
+        shell: bash   # Use Git Bash for command execution
 
     steps:
       - uses: actions/checkout@v7
@@ -17,17 +17,25 @@ jobs:
         with:
           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
 
-      # Enable Tailscale SSH daemon:
-      - name: Enable Tailscale SSH
+      # Enable Windows native OpenSSH Server (Tailscale SSH daemon is Linux/macOS only):
+      - name: Enable Windows OpenSSH Server
+        shell: powershell
         run: |
-          tailscale set --ssh
+          # Ensure OpenSSH.Server capability is installed and running
+          Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH.Server*' | Add-WindowsCapability -Online -ErrorAction SilentlyContinue
+          Set-Service -Name sshd -StartupType Automatic
+          Start-Service -Name sshd
 
-          echo "==========================================================="
-          echo "Tailscale IPs: $(tailscale ip | xargs)"
-          echo "Connect via SSH using:"
-          echo "  * ssh runneradmin@$(tailscale ip -4)"
-          echo "  * ssh runneradmin@$(tailscale ip -6)"
-          echo "==========================================================="
+          # Set a password for runneradmin to allow SSH authentication
+          $password = ConvertTo-SecureString "DebugPassword123!" -AsPlainText -Force
+          Set-LocalUser -Name "runneradmin" -Password $password
+
+          Write-Host "==========================================================="
+          Write-Host "Tailscale IPs: $(tailscale ip)"
+          Write-Host "Connect via SSH using:"
+          Write-Host "  * ssh runneradmin@$(tailscale ip -4)"
+          Write-Host "Password: DebugPassword123!"
+          Write-Host "==========================================================="
 
       # Pre-install Windows packages via Chocolatey and Pip:
       - name: Install custom packages
@@ -80,7 +88,7 @@ jobs:
             echo "Tailscale IPs: $(tailscale ip | xargs)"
             echo "Connect via SSH using:"
             echo "  * ssh runneradmin@$(tailscale ip -4)"
-            echo "  * ssh runneradmin@$(tailscale ip -6)"
+            echo "Password: DebugPassword123!"
             echo "==========================================================="
             sleep 60
           done
