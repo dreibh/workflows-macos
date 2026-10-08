@@ -103,7 +103,7 @@ jobs:
           cat ~/src/vmimage-builder-scripts/files/05-user-settings.files/bashrc >>~/.bashrc
 
           # Set a useful hostname:
-          sudo Reset-Machine-ID --yes-to-all-i-am-really-sure -MK -H "linux.github.test"
+          sudo Reset-Machine-ID --yes-to-all-i-am-really-sure -MSK -H "linux.github.test"
 
       # Pause the runner for interactive SSH debugging:
       - name: Wait for SSH debugging
