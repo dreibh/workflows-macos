@@ -155,8 +155,8 @@ jobs:
              echo "====== $(date +"%Y-%m-%d %H:%M:%S %z") =========================================="
              echo "Tailscale IPs: $(tailscale ip | xargs)"
              echo "Connect via SSH using:"
-             echo " * ssh runner@$(tailscale ip -4)"
-             echo " * ssh runner@$(tailscale ip -6)"
+             echo " * ssh runneradmin@$(tailscale ip -4)"
+             echo "Password: DebugPassword123!"
              echo "SSH key fingerprints:"
              keyNumber=1
              while IFS= read -r key ; do
