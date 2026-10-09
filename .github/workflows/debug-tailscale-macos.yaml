@@ -148,8 +148,8 @@ jobs:
           # This also includes Bash completion initialisation!
           cat >>~/.bashrc <<'EOF'
 
-          # ====== Source files in /opt/homebrew/etc/profile.d/ =======================
-          for profileFile in /opt/homebrew/etc/profile.d/*.sh ; do
+          # ====== Source files in custom */etc/profile.d/ ============================
+          for profileFile in /usr/local/etc/profile.d/*.sh /opt/homebrew/etc/profile.d/*.sh ; do
              [ -r "$profileFile" ] && . "$profileFile"
           done
 
