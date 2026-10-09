@@ -144,14 +144,6 @@ jobs:
           fi
           sudo dscl . -create /Users/runner UserShell "$BREW_BASH"
 
-          # Ensure login shells (SSH) source ~/.bashrc:
-          touch ~/.bash_profile
-          if ! grep -qF "[ -f ~/.bashrc ] && . ~/.bashrc" ~/.bash_profile ; then
-             cat >>~/.bash_profile <<EOF
-          [ -f ~/.bashrc ] && . ~/.bashrc
-          EOF
-          fi
-
           # Enable Bash shell completions:
           cat >>~/.bashrc <<EOF
           [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
