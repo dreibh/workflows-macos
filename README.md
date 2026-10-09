@@ -2,7 +2,7 @@
 
 # 💡 What are the GitHub Debugging Workflows?
 
-This repository contains GitHub Workflow for debugging GitHub Workflow instances interactively using SSH access via [Tailscale](https://tailscale.com/) VPN:
+This repository contains GitHub Workflows for debugging GitHub Workflow instances interactively using SSH access via a [Tailscale](https://tailscale.com/) VPN:
 
 * MacOS Debugging Workflow:
   [`.github/workflows/debug-tailscale-macos.yaml`](.github/workflows/debug-tailscale-macos.yaml)
@@ -15,15 +15,15 @@ This repository contains GitHub Workflow for debugging GitHub Workflow instances
 Each debugging workflow performs the following steps:
 
 1. Installation of Tailscale and setup of a Tailscale VPN tunnel to allow SSH access to the instance.
-2. Installation of some build dependencies, particularly:
+2. Installation of build dependencies, particularly for build tests of:
 
+  - [System-Tools](https://github.com/dreibh/system-tools/) (see [System-Tools – Tools for Basic System Management](https://www.nntb.no/~dreibh/system-tools/))
+  - as well as the [Virtual Machine Image Builder and System Installation Scripts](https://github.com/simula/nornet-vmimage-builder-scripts/) (see [Virtual Machine Image Builder and System Installation Scripts](https://www.nntb.no/~dreibh/vmimage-builder-scripts/))
   - [HiPerConTracer](https://github.com/dreibh/hipercontracer/) (see [HiPerConTracer – High-Performance Connectivity Tracer](https://www.nntb.no/~dreibh/hipercontracer/))
   - [NetPerfMeter](https://github.com/dreibh/netperfmeter/) (see [NetPerfMeter – A TCP/MPTCP/UDP/SCTP/DCCP Network Performance Meter Tool](https://www.nntb.no/~dreibh/netperfmeter/))
   - [SubNetCalc](https://github.com/dreibh/subnetcalc/) (see [SubNetCalc – An IPv4/IPv6 Subnet Calculator](https://www.nntb.no/~dreibh/subnetcalc/))
   - [BibTeXConv](https://github.com/dreibh/bibtexconv/) (see [BibTeXConv – A BibTeX File Converter](https://www.nntb.no/~dreibh/bibtexconv/))
   - [FractGen](https://github.com/dreibh/fractgen/) (see [FractGen – An Extensible Fractal Generator](https://www.nntb.no/~dreibh/fractalgenerator/))
-  - [System-Tools](https://github.com/dreibh/system-tools/) (see [System-Tools – Tools for Basic System Management](https://www.nntb.no/~dreibh/system-tools/))
-  - as well as the [Virtual Machine Image Builder and System Installation Scripts](https://github.com/simula/nornet-vmimage-builder-scripts/) (see [Virtual Machine Image Builder and System Installation Scripts](https://www.nntb.no/~dreibh/vmimage-builder-scripts/))
 
 3. Configuration of the environment to make debugging more comfortable.
 
@@ -32,16 +32,16 @@ Each debugging workflow performs the following steps:
 
 ## Prepare a client machine
 
-1. Set up a [Tailscale](https://tailscale.com/) VPN, e.g., in a Ubuntu VM or container:
+1. Set up a [Tailscale](https://tailscale.com/) VPN, e.g., in an Ubuntu VM or container:
 
   ```bash
   curl -fsSL https://tailscale.com/install.sh | sh
   sudo tailscale up
   ```
 
-  You may need to authenticate to Tailscale with GitHub
+  You may need to authenticate to Tailscale with GitHub.
 
-  It is strongly recommended to also install [System-Tools](https://www.nntb.no/~dreibh/system-tools/) as well:
+  It is strongly recommended to install [System-Tools](https://www.nntb.no/~dreibh/system-tools/) as well:
 
   ```bash
   sudo apt-add-repository -y ppa:dreibh/ppa
@@ -62,13 +62,13 @@ Copy the workflow YAML files from [`.github/workflows`](.github/workflows/) of t
 * Windows Debugging Workflow:
   [`.github/workflows/debug-tailscale-windows.yaml`](.github/workflows/debug-tailscale-windows.yaml)
 
-Add the files, commit and push.
+Add the files, commit, and push.
 
 ## Manually start an instance on GitHub
 
-1. Log into [GitHub](https://www.github.com), and go to your repository.
+1. Log into [GitHub](https://www.github.com) and go to your repository.
 
-2. Clicking on _Actions_ shows the debugging workflows, i.e.,
+2. Clicking on _Actions_ shows the debugging workflows, i.e.:
 
   * MacOS Debugging Workflow via Tailscale
   * Ubuntu Debugging Workflow via Tailscale
@@ -76,7 +76,7 @@ Add the files, commit and push.
 
   Select a workflow, e.g., "MacOS Debugging Workflow via Tailscale", and start this workflow under "Run workflow".
 
-3. Open the log of the running instance, and look for the Tailscale SSH details of the instance:
+3. Open the log of the running instance and look for the Tailscale SSH details of the instance:
 
   ```
   ====== 2026-10-09 07:50:35 +0000 ==========================================
@@ -91,14 +91,15 @@ Add the files, commit and push.
   ===========================================================================
   ```
 
-4. Call the shown SSH command from the client machine, e.g.:
+4. Call the displayed SSH command from the client machine, e.g.:
 
   ```bash
   ssh runner@100.100.210.26
   ```
 
   You may need to authenticate to Tailscale with GitHub.
-  For the Windows instance, use the shown password.
+
+  For Windows instances, connect using `runneradmin` (e.g., `ssh runneradmin@100.100.210.26`) and authenticate using either the displayed password or your GitHub SSH key.
 
 
 # 🔗 Useful Links
