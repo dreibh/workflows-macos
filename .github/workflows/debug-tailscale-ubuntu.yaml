@@ -9,7 +9,7 @@
 #                https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# GitHub Workflows Debugging
+# GitHub Debugging Workflows via Tailscale
 # Copyright (C) 2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -27,12 +27,12 @@
 #
 # Contact: dreibh@simula.no
 
-name: Ubuntu Workflow Debugging via Tailscale
+name: Ubuntu Debugging Workflow via Tailscale
 on: [ workflow_dispatch ]   # Workflow is triggered manually
 
 jobs:
   # #########################################################################
-  # #### Ubuntu Workflow Debugging via Tailscale                         ####
+  # #### Ubuntu Debugging Workflow via Tailscale                         ####
   # #########################################################################
   tailscale-debug-ubuntu:
     runs-on: ubuntu-latest

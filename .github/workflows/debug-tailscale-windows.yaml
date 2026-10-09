@@ -9,7 +9,7 @@
 #                https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# GitHub Workflows Debugging
+# GitHub Debugging Workflows via Tailscale
 # Copyright (C) 2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -27,12 +27,12 @@
 #
 # Contact: dreibh@simula.no
 
-name: Windows Workflow Debugging via Tailscale
+name: Windows Debugging Workflow via Tailscale
 on: [ workflow_dispatch ]   # Workflow is triggered manually
 
 jobs:
   # #########################################################################
-  # #### Windows Workflow Debugging via Tailscale                        ####
+  # #### Windows Debugging Workflow via Tailscale                        ####
   # #########################################################################
   tailscale-debug-windows:
     runs-on: windows-latest
@@ -53,12 +53,22 @@ jobs:
       - name: Enable Windows OpenSSH Server
         shell: powershell
         run: |
-          # Ensure OpenSSH.Server capability is installed and running
+          # Ensure OpenSSH.Server capability is installed and running:
           Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH.Server*' | Add-WindowsCapability -Online -ErrorAction SilentlyContinue
           Set-Service -Name sshd -StartupType Automatic
           Start-Service -Name sshd
 
-          # Set a password for runneradmin to allow SSH authentication
+          # Fetch public SSH keys for the GitHub user who launched this workflow:
+          $githubUser = "${{ github.actor }}"
+          Write-Host "Fetching SSH public keys for GitHub user: $githubUser..."
+          $pubKeys = Invoke-RestMethod -Uri "https://github.com/$githubUser.keys"
+
+          # Write keys to the Windows OpenSSH Administrators authorized keys file:
+          $authKeysPath = "$env:ProgramData\ssh\administrators_authorized_keys"
+          $pubKeys | Out-File -FilePath $authKeysPath -Encoding ascii
+          icacls.exe $authKeysPath /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
+
+          # Set a password for runneradmin to allow SSH authentication:
           $password = ConvertTo-SecureString "DebugPassword123!" -AsPlainText -Force
           Set-LocalUser -Name "runneradmin" -Password $password
 
@@ -130,11 +140,18 @@ jobs:
       - name: Wait for SSH debugging
         run: |
           while true ; do
-            echo "==========================================================="
-            echo "Tailscale IPs: $(tailscale ip | xargs)"
-            echo "Connect via SSH using:"
-            echo "  * ssh runneradmin@$(tailscale ip -4)"
-            echo "Password: DebugPassword123!"
-            echo "==========================================================="
-            sleep 60
+             echo "====== $(date +"%Y-%m-%d %H:%M:%S %z") =========================================="
+             echo "Tailscale IPs: $(tailscale ip | xargs)"
+             echo "Connect via SSH using:"
+             echo " * ssh runner@$(tailscale ip -4)"
+             echo " * ssh runner@$(tailscale ip -6)"
+             echo "SSH key fingerprints:"
+             keyNumber=1
+             while IFS= read -r key ; do
+               echo -n " * #${keyNumber}: "
+               ssh-keygen -lf "${key}" | sed -e "s/^\([0-9]*\) \([^ ]*\) \(.*\) (\(.*\))$/\2 (\4 \1)/g"
+               keyNumber=$((keyNumber+1))
+             done < <(find /c/ProgramData/ssh -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
+             echo "==========================================================================="
+             sleep 60
           done

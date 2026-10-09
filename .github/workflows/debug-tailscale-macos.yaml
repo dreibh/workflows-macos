@@ -9,7 +9,7 @@
 #                https://www.nntb.no/~dreibh/system-tools/
 # ==========================================================================
 #
-# GitHub Workflows Debugging
+# GitHub Debugging Workflows via Tailscale
 # Copyright (C) 2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
@@ -27,12 +27,12 @@
 #
 # Contact: dreibh@simula.no
 
-name: MacOS Workflow Debugging via Tailscale
+name: MacOS Debugging Workflow via Tailscale
 on: [ workflow_dispatch ]   # Workflow is triggered manually
 
 jobs:
   # #########################################################################
-  # #### MacOS Workflow Debugging via Tailscale                          ####
+  # #### MacOS Debugging Workflow via Tailscale                          ####
   # #########################################################################
   tailscale-debug-macos:
     runs-on: macos-latest
@@ -170,6 +170,6 @@ jobs:
                 keyNumber=$((keyNumber+1))
               done < <(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
               echo "==========================================================================="
-              sleep 60
+              sleep 300
             done
           '
