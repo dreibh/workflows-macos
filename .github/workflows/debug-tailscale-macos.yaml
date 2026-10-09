@@ -113,6 +113,9 @@ jobs:
           # Set a useful hostname:
           sudo Reset-Machine-ID --yes-to-all-i-am-really-sure -MSK -H "apple.github.test"
 
+          # Enable "locate" database:
+          sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
+
       # Pause the runner for interactive SSH debugging:
       - name: Wait for SSH debugging
         run: |
