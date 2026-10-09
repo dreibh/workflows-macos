@@ -144,9 +144,16 @@ jobs:
           fi
           sudo dscl . -create /Users/runner UserShell "$BREW_BASH"
 
-          # Enable Bash shell completions:
+          # Process scripts in /opt/homebrew/etc/profile.d/:
+          # This also includes Bash completion initialisation!
           cat >>~/.bashrc <<EOF
-          [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
+
+          # ====== Source files in /opt/homebrew/etc/profile.d/ =======================
+          for profileFile in /opt/homebrew/etc/profile.d/*.sh ; do
+             [ -r "$profileFile" ] && . "$profileFile"
+          done
+
+          # ===========================================================================
           EOF
           cat ~/src/vmimage-builder-scripts/files/05-user-settings.files/bashrc >>~/.bashrc
 
