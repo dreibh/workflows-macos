@@ -64,6 +64,26 @@ jobs:
           done < <(find /etc/ssh -maxdepth 1 -name "ssh_host_*.pub" -print | sort)
           echo "==========================================================================="
 
+      # ###### Clone repositories ###########################################
+      - name: Clone repositories
+        run: |
+          mkdir -p ~/src && cd ~/src
+          git clone https://dreibh@github.com/dreibh/bibtexconv
+          git clone https://dreibh@github.com/simula/dynmhs
+          git clone https://dreibh@github.com/dreibh/fractgen
+          git clone https://dreibh@github.com/dreibh/hipercontracer
+          git clone https://dreibh@github.com/dreibh/netperfmeter
+          git clone https://dreibh@github.com/dreibh/rserpooldemo
+          git clone https://dreibh@github.com/dreibh/rsplib
+          git clone https://dreibh@github.com/dreibh/rtpaudio
+          git clone https://dreibh@github.com/dreibh/sctplib
+          git clone https://dreibh@github.com/dreibh/slideshow
+          git clone https://dreibh@github.com/dreibh/socketapi
+          git clone https://dreibh@github.com/dreibh/subnetcalc
+          git clone https://dreibh@github.com/dreibh/system-tools
+          git clone https://dreibh@github.com/dreibh/tsctp
+          git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+
       # ###### Pre-install some Linux packages ##############################
       - name: Install custom packages
         run: |
@@ -98,26 +118,6 @@ jobs:
           python3 -m venv ~/venv
           . ~/venv/bin/activate
           pip install distro psutil
-
-      # ###### Clone repositories ###########################################
-      - name: Clone repositories
-        run: |
-          mkdir -p ~/src && cd ~/src
-          git clone https://dreibh@github.com/dreibh/bibtexconv
-          git clone https://dreibh@github.com/simula/dynmhs
-          git clone https://dreibh@github.com/dreibh/fractgen
-          git clone https://dreibh@github.com/dreibh/hipercontracer
-          git clone https://dreibh@github.com/dreibh/netperfmeter
-          git clone https://dreibh@github.com/dreibh/rserpooldemo
-          git clone https://dreibh@github.com/dreibh/rsplib
-          git clone https://dreibh@github.com/dreibh/rtpaudio
-          git clone https://dreibh@github.com/dreibh/sctplib
-          git clone https://dreibh@github.com/dreibh/slideshow
-          git clone https://dreibh@github.com/dreibh/socketapi
-          git clone https://dreibh@github.com/dreibh/subnetcalc
-          git clone https://dreibh@github.com/dreibh/system-tools
-          git clone https://dreibh@github.com/dreibh/tsctp
-          git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
 
       # ###### Install System-Tools and configure environment ###############
       - name: Install System-Tools and configure environment

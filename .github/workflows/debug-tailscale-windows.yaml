@@ -72,12 +72,39 @@ jobs:
           $password = ConvertTo-SecureString "DebugPassword123!" -AsPlainText -Force
           Set-LocalUser -Name "runneradmin" -Password $password
 
+          # Set shell to Bash:
+          New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" `
+             -Name "DefaultShell" `
+             -Value "C:\Program Files\Git\bin\bash.exe" `
+             -PropertyType String `
+             -Force
+
           Write-Host "==========================================================="
           Write-Host "Tailscale IPs: $(tailscale ip)"
           Write-Host "Connect via SSH using:"
           Write-Host "  * ssh runneradmin@$(tailscale ip -4)"
           Write-Host "Password: DebugPassword123!"
           Write-Host "==========================================================="
+
+      # ###### Clone repositories ###########################################
+      - name: Clone repositories
+        run: |
+          mkdir -p ~/src && cd ~/src
+          # git clone https://dreibh@github.com/dreibh/bibtexconv
+          # git clone https://dreibh@github.com/simula/dynmhs
+          # git clone https://dreibh@github.com/dreibh/fractgen
+          # git clone https://dreibh@github.com/dreibh/hipercontracer
+          # git clone https://dreibh@github.com/dreibh/netperfmeter
+          # git clone https://dreibh@github.com/dreibh/rserpooldemo
+          # git clone https://dreibh@github.com/dreibh/rsplib
+          # git clone https://dreibh@github.com/dreibh/rtpaudio
+          # git clone https://dreibh@github.com/dreibh/sctplib
+          # git clone https://dreibh@github.com/dreibh/slideshow
+          # git clone https://dreibh@github.com/dreibh/socketapi
+          git clone https://dreibh@github.com/dreibh/subnetcalc
+          git clone https://dreibh@github.com/dreibh/system-tools
+          # git clone https://dreibh@github.com/dreibh/tsctp
+          git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
 
       # ###### Pre-install some Windows packages ############################
       # Some Windows CLI applications (Scoop) and C/C++ Libraries (vcpkg)
@@ -103,26 +130,6 @@ jobs:
           python -m venv "$env:USERPROFILE\venv"
           & "$env:USERPROFILE\venv\Scripts\Activate.ps1"
           pip install distro psutil
-
-      # ###### Clone repositories ###########################################
-      - name: Clone repositories
-        run: |
-          mkdir -p ~/src && cd ~/src
-          # git clone https://dreibh@github.com/dreibh/bibtexconv
-          # git clone https://dreibh@github.com/simula/dynmhs
-          # git clone https://dreibh@github.com/dreibh/fractgen
-          # git clone https://dreibh@github.com/dreibh/hipercontracer
-          # git clone https://dreibh@github.com/dreibh/netperfmeter
-          # git clone https://dreibh@github.com/dreibh/rserpooldemo
-          # git clone https://dreibh@github.com/dreibh/rsplib
-          # git clone https://dreibh@github.com/dreibh/rtpaudio
-          # git clone https://dreibh@github.com/dreibh/sctplib
-          # git clone https://dreibh@github.com/dreibh/slideshow
-          # git clone https://dreibh@github.com/dreibh/socketapi
-          git clone https://dreibh@github.com/dreibh/subnetcalc
-          git clone https://dreibh@github.com/dreibh/system-tools
-          # git clone https://dreibh@github.com/dreibh/tsctp
-          git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
 
       # ###### Install System-Tools and configure environment ###############
       - name: Configure environment
