@@ -137,8 +137,20 @@ jobs:
              ~/src/vmimage-builder-scripts/files/80-simulamet.files/02-simulamet \
              /usr/local/etc/system-info.d/
 
-          # Set shell to Bash:
-          sudo dscl . -create /Users/runner UserShell /opt/homebrew/bin/bash
+          # Set shell to modern Bash-5.x:
+          BREW_BASH="$(brew --prefix)/bin/bash"
+          if ! grep -qF "$BREW_BASH" /etc/shells; then
+             echo "$BREW_BASH" | sudo tee -a /etc/shells
+          fi
+          sudo dscl . -create /Users/runner UserShell "$BREW_BASH"
+
+          # Ensure login shells (SSH) source ~/.bashrc:
+          touch ~/.bash_profile
+          if ! grep -qF "[ -f ~/.bashrc ] && . ~/.bashrc" ~/.bash_profile ; then
+             cat >>~/.bash_profile <<EOF
+          [ -f ~/.bashrc ] && . ~/.bashrc
+          EOF
+          fi
 
           # Enable Bash shell completions:
           cat >>~/.bashrc <<EOF
