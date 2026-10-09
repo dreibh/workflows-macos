@@ -146,7 +146,7 @@ jobs:
 
           # Process scripts in /opt/homebrew/etc/profile.d/:
           # This also includes Bash completion initialisation!
-          cat >>~/.bashrc <<EOF
+          cat >>~/.bashrc <<'EOF'
 
           # ====== Source files in /opt/homebrew/etc/profile.d/ =======================
           for profileFile in /opt/homebrew/etc/profile.d/*.sh ; do
