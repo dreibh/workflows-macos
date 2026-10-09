@@ -121,7 +121,7 @@ jobs:
           echo "$env:USERPROFILE\scoop\shims" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
           # 2. Install C/C++ libraries using runner pre-installed vcpkg:
-          vcpkg install gettext:x64-mingw-dynamic libmaxminddb:x64-mingw-dynamic
+          vcpkg install getopt:x64-windows gettext[tools]:x64-windows gettext-libintl:x64-windows libmaxminddb:x64-windows
 
           # 3. Install Python dependencies:
           python -m pip install --upgrade pip
