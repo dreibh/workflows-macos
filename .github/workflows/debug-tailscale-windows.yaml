@@ -151,8 +151,7 @@ jobs:
           # 2. Install C/C++ libraries using runner pre-installed vcpkg:
           $packages = @(
              "getopt:x64-windows",
-             "gettext[tools]:x64-windows",
-             "gettext-libintl:x64-windows",
+             "gettext[core,tools]:x64-windows",
              "libidn2:x64-windows",
              "libmaxminddb:x64-windows"
           )
