@@ -79,11 +79,22 @@ jobs:
              -PropertyType String `
              -Force
 
-          Write-Host "==========================================================="
+          $now = Get-Date -Format "yyyy-MM-dd HH:mm:ss zzz"
+          Write-Host "====== $now =========================================="
           Write-Host "Tailscale IPs: $(tailscale ip)"
           Write-Host "Connect via SSH using:"
-          Write-Host "  * ssh runneradmin@$(tailscale ip -4)"
+          Write-Host " * ssh runneradmin@$(tailscale ip -4)"
           Write-Host "Password: DebugPassword123!"
+          Write-Host "SSH key fingerprints:"
+          $keyNumber = 1
+          Get-ChildItem "$env:ProgramData\ssh\ssh_host_*.pub" | Sort-Object Name | ForEach-Object {
+             $fp = ssh-keygen -lf $_.FullName
+             if ($fp -match '^(\d+)\s+(\S+)\s+.*?\((.+)\)$') {
+                $fp = "$($Matches[2]) ($($Matches[3]) $($Matches[1]))"
+             }
+             Write-Host " * #${keyNumber}: $fp"
+             $keyNumber++
+          }
           Write-Host "==========================================================="
 
       # ###### Clone repositories ###########################################
@@ -121,12 +132,14 @@ jobs:
           echo "$env:USERPROFILE\scoop\shims" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
           # 2. Install C/C++ libraries using runner pre-installed vcpkg:
-          vcpkg install \
-             getopt:x64-windows \
-             gettext[tools]:x64-windows \
-             gettext-libintl:x64-windows \
-             libidn2:x64-windows \
-             libmaxminddb:x64-windows
+          $packages = @(
+             "getopt:x64-windows",
+             "gettext[tools]:x64-windows",
+             "gettext-libintl:x64-windows",
+             "libidn2:x64-windows",
+             "libmaxminddb:x64-windows"
+          )
+          vcpkg install $packages
 
           # 3. Install Python dependencies:
           python -m pip install --upgrade pip
